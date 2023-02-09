@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/BioKT/PLUMED-docs/setup/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Setup - BioKT-PLUMED-docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Setup";
+        var mkdocs_page_input_path = "setup.md";
+        var mkdocs_page_url = "/BioKT/PLUMED-docs/setup/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> BioKT-PLUMED-docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Setup</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installing-with-conda">Installing with conda</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#patch-gromacs-with-plumed">Patch Gromacs with PLUMED</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../umbrella/">Umbrella sampling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../metadynamics/">Metadynamics</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../replicas/">Multiple replicas</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dipc/">PLUMED@DIPC</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">BioKT-PLUMED-docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Setup</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="setting-up-plumed-with-gromacs">Setting up PLUMED with Gromacs</h2>
+<p>First of all you must patch the Gromacs code with PLUMED. There
+are multiple options available for you. </p>
+<h3 id="installing-with-conda">Installing with conda</h3>
+<p>If you only want
+a hassle-free installation to try things out, then you can
+simply use the pre-compiled versions made available by the 
+PLUMED developers for their masterclasses. Here I follow
+the instructions from the 
+<a href="https://www.plumed.org/doc-v2.7/user-doc/html/masterclass-21-1.html#masterclass-21-1-install">first masterclass</a>
+In the terminal, type</p>
+<pre><code>$ conda create --name plumed-masterclass
+</code></pre>
+<p>and then</p>
+<pre><code>$ conda activate plumed-masterclass
+$ conda install -c conda-forge plumed py-plumed numpy pandas matplotlib notebook mdtraj mdanalysis git
+$ conda install --strict-channel-priority -c plumed/label/masterclass -c conda-forge gromacs
+</code></pre>
+<h3 id="patch-gromacs-with-plumed">Patch Gromacs with PLUMED</h3>
+<p>First install PLUMED. In order to do this you will have to
+download and unzip the software</p>
+<pre><code>$ wget https://github.com/plumed/plumed2/archive/refs/heads/master.zip
+$ unzip master.zip
+$ cd plumed2-master/
+</code></pre>
+<p>Then you will follow the usual steps to install software using Make</p>
+<pre><code>$ ./configure --prefix=/usr/local
+$ make
+$ sudo make install
+</code></pre>
+<p>You will also have to make sure that the installed libraries are 
+visible in your path</p>
+<pre><code>export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
+</code></pre>
+<p>The next step is to install Gromacs. First download the code
+and unzip the package. In this case I am patching the 2021.6 
+version of Gromacs.</p>
+<pre><code>wget ftp://ftp.gromacs.org/gromacs/gromacs-2021.6.tar.gz
+tar -xvf gromacs-2021.6.tar.gz
+</code></pre>
+<p>The next thing I did was to check whether I could use Cmake to 
+install with my desired options, in this case running with GPUs
+and compiling with MPI support</p>
+<pre><code>cd gromacs-2021.6/
+mkdir build
+cd build/
+cmake .. -DGMX_BUILD_OWN_FFTW=ON -DREGRESSIONTEST_DOWNLOAD=ON -DGMX_MPI=on -DGMX_GPU=CUDA -DCMAKE_INSTALL_PREFIX=/opt/gromacs/2021.6
+</code></pre>
+<p>make</p>
+<p>Then comes the key step of running the <code>plumed patch</code> command</p>
+<pre><code>cd ..
+plumed patch -p
+</code></pre>
+<p>After that you can go back to your Gromacs install directory and
+finish the installation as usual</p>
+<pre><code>cd build/
+cmake .. -DGMX_BUILD_OWN_FFTW=ON -DREGRESSIONTEST_DOWNLOAD=ON -DGMX_MPI=on -DGMX_GPU=CUDA -DCMAKE_INSTALL_PREFIX=/opt/gromacs/2021.6
+make
+sudo make install
+/opt/gromacs/2021.6/bin/gmx_mpi mdrun -h
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../umbrella/" class="btn btn-neutral float-right" title="Umbrella sampling">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../umbrella/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
