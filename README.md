@@ -9,6 +9,6 @@ necessarily less exhaustive and intended to provide working examples
 of methods we routinely employ.
 
 ## Simulation methods
-* [Umbrella sampling](docs/umbrella.md)
-* [Metadynamics](docs/metadynamics.md)
-* [Simulations with multiple replicas](docs/replicas.md)
+* Umbrella sampling
+* Metadynamics
+* Simulations with multiple replicas
