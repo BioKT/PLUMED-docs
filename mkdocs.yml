@@ -1,1 +1,8 @@
 site_name: BioKT-PLUMED-docs 
+site_url: https://github.com/BioKT/PLUMED-docs
+nav:
+    - Home: index.md
+    - Umbrella sampling: umbrella.md
+    - Metadynamics: metadynamics.md
+    - Multiple replicas : replicas.md
+theme: readthedocs

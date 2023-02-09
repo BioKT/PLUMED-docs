@@ -8,13 +8,7 @@ borrow extensively from the fantastic
 necessarily less exhaustive and intended to provide working examples
 of methods we routinely employ.
 
-## Umbrella sampling 
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
-
-## Metadynamics
-
-## Replica exchange methods
+## Simulation methods
+* [Umbrella sampling](docs/umbrella.md)
+* [Metadynamics](docs/metadynamics.md)
+* [Simulations with multiple replicas](docs/replicas.md)
