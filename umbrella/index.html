@@ -101,11 +101,12 @@
 <p>First of all, we will download the data required to run the calculations, which should be in the <code>data/umbrella</code> folder of this repository.
 It should contain the following files</p>
 <pre><code>$ ls data/umbrella/
-    reference.pdb topolA.tpr    topolB.tpr
+    ala_dipeptide_analysis.ipynb topolA.tpr                   wham.py
+    reference.pdb                topolB.tpr
 </code></pre>
 <p>Using the typical Gromacs syntax, you could use these <code>tpr</code> files 
 to run MD simulations using </p>
-<pre><code>$ gmx mdrun -plumed plumed.dat -s topolA.tpr -nsteps 200000 -x traj_unbiased.xtc
+<pre><code>$ gmx mdrun -s topolA.tpr -nsteps 200000 -x traj_unbiased.xtc
 </code></pre>
 <p>This will result in an unbiased simulation trajectory of the 
 alanine dipeptide. </p>
@@ -223,17 +224,11 @@ ffpsir: CONVERT_TO_FES GRID=hhpsir
 DUMPGRID GRID=ffpsir FILE=fes_psi_catr.dat
 </code></pre>
 <p>This script is again read by plumed driver, and from this program we get our outputs.</p>
-<p>Clearly, using umbrella sampling we have been able to cover much more ground for our reaction coordinates, while obtaining a very consistent PMF in the regions that actually matter.
-One of the assignments in the masterclass is to run from a different initial state. I try this repeating what we’ve done from topolA.tpr:
-$&gt; for i in $(seq 0 1 31); do gmx mdrun -plumed plumed_${i}.dat -s topolB.tpr -nsteps 200000 -x traj_comp_B_${i}.xtc; done
-$ gmx trjcat -cat -f <code>for i in $(seq 0 1 31); do echo "traj_comp_B_${i}.xtc"; done</code> -o traj_multi_B_cat.xtc
-I generate the corresponding plumed_B_${i}.dat  files for plumed driver and run:
-$ for i in $(seq 0 1 31)
-do
-plumed driver --plumed plumed_B_${i}.dat --ixtc traj_multi_B_cat.xtc --trajectory-stride 100
-done</p>
-<p>Below I compare the sampling from topolA (left) and from topolB (right). There are very interesting differences, particularly with respect to the positive phi region, which is very much not sampled when we start to run dynamics from the topolB.</p>
-<p>The results are interesting as we find that there certainly is some influence in the initial conditions for umbrella sampling.</p>
+<pre><code>plumed driver --plumed plumed_multi.dat --ixtc traj_multi_cat.xtc --trajectory-stride 100 --kt 2.4943387854
+</code></pre>
+<p>In the folder where you have found the data to run these tests you can find a script that will let you plot the free energy landscapes as estimated from umbrella sampling and compare them with those from the equilibrium MD trajectory.
+Clearly, using umbrella sampling we have been able to cover much more ground for our reaction coordinates, while obtaining a very consistent PMF in the regions that actually matter.
+One of the assignments in the masterclass is to run from a different initial state, that corresponding to the <code>topolB.tpr</code> Gromacs input file.</p>
               
             </div>
           </div><footer>
