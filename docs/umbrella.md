@@ -6,8 +6,10 @@
 ## Umbrella sampling with PLUMED
 
 ### Alanine dipeptide in vacuum
-First of all, we will download the data required to run the calculations, which should be in the `data/umbrella` folder of this repository.
-It should contain the following files
+First of all, we will download the data required to run the calculations, which 
+should be in the `data/umbrella` folder of this repository.
+It should contain the following files from the 
+[21.3 PLUMED masterclass](https://www.plumed.org/doc-v2.7/user-doc/html/masterclass-21-3.html).
 
     $ ls data/umbrella/
         ala_dipeptide_analysis.ipynb topolA.tpr                   wham.py
@@ -152,3 +154,33 @@ This script is again read by plumed driver, and from this program we get our out
 In the folder where you have found the data to run these tests you can find a script that will let you plot the free energy landscapes as estimated from umbrella sampling and compare them with those from the equilibrium MD trajectory.
 Clearly, using umbrella sampling we have been able to cover much more ground for our reaction coordinates, while obtaining a very consistent PMF in the regions that actually matter.
 One of the assignments in the masterclass is to run from a different initial state, that corresponding to the `topolB.tpr` Gromacs input file.
+
+#### Running with multiple replicas
+Typically, if we want to do molecular simulations using umbrella sampling, we will 
+take advantage of the parallel capabilities of modern computers. Additionally, 
+we may able to swap conformations between umbrella windows in order to enhance the
+sampling. This may be helpful to avoid getting trapped in local minima. The specifics
+on how to do this using PLUMED in Gromacs are described in the first part of the 
+[PLUMED 21.5 masterclass](https://www.plumed.org/doc-v2.7/user-doc/html/masterclass-21-3.html).
+In order to take advantage of this, the software must have been compiled using MPI.
+
+The PLUMED input file for this type of calculation is only incrementally more complicated
+than the one used before
+
+    MOLINFO STRUCTURE=../reference.pdb
+    phi: TORSION ATOMS=@phi-2
+    psi: TORSION ATOMS=@psi-2
+    bb: RESTRAINT ARG=phi KAPPA=200.0 AT=@replicas:-3.141,-2.945,-2.748,-2.552,-2.356,-2.159,-1.963,-1.767,-1.570,-1.374,-1.178,-0.981,-0.785,-0.589,-0.392,-0.196,0.0,0.196,0.392,0.589,0.785,0.981,1.178,1.374,1.570,1.767,1.963,2.159,2.356,2.552,2.748,2.945
+    PRINT ARG=phi,psi,bb.bias FILE=../colvar_multi.dat STRIDE=100
+
+Note the `AT=@replicas` section in the `RESTRAINT` action. In this case, we must generate
+as many directories (here termed `run0`, `run1`, and so on), each of which will contain 
+the `tpr` file. Simulations are then run using
+
+    $ mpiexec -np 32 --oversubscribe gmx_mpi mdrun -multidir run* -plumed ../plumed.dat -s topolA.tpr -replex 200 -nsteps 200000 
+
+While much of the analysis will remain unchanged from the case of running each umbrella
+window independently, it is important to carefully check in the 
+[demuxed trajectories](https://github.com/srnas/demux) whether
+the different copies of the system diffuse across windows. 
+Some copies may remain isolated from the rest, which may have catastrophic results. 
