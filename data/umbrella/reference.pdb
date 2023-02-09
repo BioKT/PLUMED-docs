@@ -1,0 +1,25 @@
+TITLE     Green Red Orange Magenta Azure Cyan Skyblue in water
+REMARK    THIS IS A SIMULATION BOX
+CRYST1   27.513   27.513   27.513  90.00  90.00  90.00 P 1           1
+MODEL        1
+ATOM      1 HH31 ACE     1      10.220  13.320  13.540  1.00  0.00           H
+ATOM      2  CH3 ACE     1      10.880  13.470  14.400  1.00  0.00           C
+ATOM      3 HH32 ACE     1      10.570  12.890  15.260  1.00  0.00           H
+ATOM      4 HH33 ACE     1      10.700  14.530  14.600  1.00  0.00           H
+ATOM      5  C   ACE     1      12.330  13.310  13.950  1.00  0.00           C
+ATOM      6  O   ACE     1      12.800  12.250  14.130  1.00  0.00           O
+ATOM      7  N   ALA     2      13.000  14.310  13.450  1.00  0.00           N
+ATOM      8  H   ALA     2      12.590  15.230  13.350  1.00  0.00           H
+ATOM      9  CA  ALA     2      14.460  14.310  13.230  1.00  0.00           C
+ATOM     10  HA  ALA     2      14.790  13.280  13.140  1.00  0.00           H
+ATOM     11  CB  ALA     2      14.810  15.100  11.970  1.00  0.00           C
+ATOM     12  HB1 ALA     2      14.350  16.080  11.890  1.00  0.00           H
+ATOM     13  HB2 ALA     2      15.890  15.190  11.980  1.00  0.00           H
+ATOM     14  HB3 ALA     2      14.400  14.480  11.170  1.00  0.00           H
+ATOM     15  C   ALA     2      15.250  14.890  14.480  1.00  0.00           C
+ATOM     16  O   ALA     2      14.810  15.840  15.120  1.00  0.00           O
+ATOM     17  N   NHE     3      16.460  14.410  14.810  1.00  0.00           N
+ATOM     18  H1  NHE     3      16.910  13.590  14.420  1.00  0.00           H
+ATOM     19  H2  NHE     3      16.970  14.820  15.570  1.00  0.00           H
+TER
+ENDMDL
