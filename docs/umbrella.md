@@ -148,15 +148,4 @@ This script is again read by plumed driver, and from this program we get our out
 
 
 Clearly, using umbrella sampling we have been able to cover much more ground for our reaction coordinates, while obtaining a very consistent PMF in the regions that actually matter.
-One of the assignments in the masterclass is to run from a different initial state. I try this repeating what we’ve done from topolA.tpr:
-$> for i in $(seq 0 1 31); do gmx mdrun -plumed plumed_${i}.dat -s topolB.tpr -nsteps 200000 -x traj_comp_B_${i}.xtc; done
-$ gmx trjcat -cat -f `for i in $(seq 0 1 31); do echo "traj_comp_B_${i}.xtc"; done` -o traj_multi_B_cat.xtc
-I generate the corresponding plumed_B_${i}.dat  files for plumed driver and run:
-$ for i in $(seq 0 1 31)
-do
-plumed driver --plumed plumed_B_${i}.dat --ixtc traj_multi_B_cat.xtc --trajectory-stride 100
-done
-
-Below I compare the sampling from topolA (left) and from topolB (right). There are very interesting differences, particularly with respect to the positive phi region, which is very much not sampled when we start to run dynamics from the topolB.
-
-The results are interesting as we find that there certainly is some influence in the initial conditions for umbrella sampling.
+One of the assignments in the masterclass is to run from a different initial state, that corresponding to the `topolB.tpr` Gromacs input file.
