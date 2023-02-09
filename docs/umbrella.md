@@ -10,12 +10,13 @@ First of all, we will download the data required to run the calculations, which 
 It should contain the following files
 
     $ ls data/umbrella/
-        reference.pdb topolA.tpr    topolB.tpr
+        ala_dipeptide_analysis.ipynb topolA.tpr                   wham.py
+        reference.pdb                topolB.tpr
 
 Using the typical Gromacs syntax, you could use these `tpr` files 
 to run MD simulations using 
 
-    $ gmx mdrun -plumed plumed.dat -s topolA.tpr -nsteps 200000 -x traj_unbiased.xtc
+    $ gmx mdrun -s topolA.tpr -nsteps 200000 -x traj_unbiased.xtc
 
 This will result in an unbiased simulation trajectory of the 
 alanine dipeptide. 
@@ -146,6 +147,8 @@ follows:
 
 This script is again read by plumed driver, and from this program we get our outputs.
 
+	plumed driver --plumed plumed_multi.dat --ixtc traj_multi_cat.xtc --trajectory-stride 100 --kt 2.4943387854
 
+In the folder where you have found the data to run these tests you can find a script that will let you plot the free energy landscapes as estimated from umbrella sampling and compare them with those from the equilibrium MD trajectory.
 Clearly, using umbrella sampling we have been able to cover much more ground for our reaction coordinates, while obtaining a very consistent PMF in the regions that actually matter.
 One of the assignments in the masterclass is to run from a different initial state, that corresponding to the `topolB.tpr` Gromacs input file.
