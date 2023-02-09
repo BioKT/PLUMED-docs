@@ -52,6 +52,10 @@
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Umbrella sampling</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#alanine-dipeptide-in-vacuum">Alanine dipeptide in vacuum</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#running-with-multiple-replicas">Running with multiple replicas</a>
+    </li>
+        </ul>
     </li>
     </ul>
                 </li>
@@ -98,8 +102,10 @@
 </p>
 <h2 id="umbrella-sampling-with-plumed">Umbrella sampling with PLUMED</h2>
 <h3 id="alanine-dipeptide-in-vacuum">Alanine dipeptide in vacuum</h3>
-<p>First of all, we will download the data required to run the calculations, which should be in the <code>data/umbrella</code> folder of this repository.
-It should contain the following files</p>
+<p>First of all, we will download the data required to run the calculations, which 
+should be in the <code>data/umbrella</code> folder of this repository.
+It should contain the following files from the 
+<a href="https://www.plumed.org/doc-v2.7/user-doc/html/masterclass-21-3.html">21.3 PLUMED masterclass</a>.</p>
 <pre><code>$ ls data/umbrella/
     ala_dipeptide_analysis.ipynb topolA.tpr                   wham.py
     reference.pdb                topolB.tpr
@@ -229,6 +235,32 @@ DUMPGRID GRID=ffpsir FILE=fes_psi_catr.dat
 <p>In the folder where you have found the data to run these tests you can find a script that will let you plot the free energy landscapes as estimated from umbrella sampling and compare them with those from the equilibrium MD trajectory.
 Clearly, using umbrella sampling we have been able to cover much more ground for our reaction coordinates, while obtaining a very consistent PMF in the regions that actually matter.
 One of the assignments in the masterclass is to run from a different initial state, that corresponding to the <code>topolB.tpr</code> Gromacs input file.</p>
+<h4 id="running-with-multiple-replicas">Running with multiple replicas</h4>
+<p>Typically, if we want to do molecular simulations using umbrella sampling, we will 
+take advantage of the parallel capabilities of modern computers. Additionally, 
+we may able to swap conformations between umbrella windows in order to enhance the
+sampling. This may be helpful to avoid getting trapped in local minima. The specifics
+on how to do this using PLUMED in Gromacs are described in the first part of the 
+<a href="https://www.plumed.org/doc-v2.7/user-doc/html/masterclass-21-3.html">PLUMED 21.5 masterclass</a>.
+In order to take advantage of this, the software must have been compiled using MPI.</p>
+<p>The PLUMED input file for this type of calculation is only incrementally more complicated
+than the one used before</p>
+<pre><code>MOLINFO STRUCTURE=../reference.pdb
+phi: TORSION ATOMS=@phi-2
+psi: TORSION ATOMS=@psi-2
+bb: RESTRAINT ARG=phi KAPPA=200.0 AT=@replicas:-3.141,-2.945,-2.748,-2.552,-2.356,-2.159,-1.963,-1.767,-1.570,-1.374,-1.178,-0.981,-0.785,-0.589,-0.392,-0.196,0.0,0.196,0.392,0.589,0.785,0.981,1.178,1.374,1.570,1.767,1.963,2.159,2.356,2.552,2.748,2.945
+PRINT ARG=phi,psi,bb.bias FILE=../colvar_multi.dat STRIDE=100
+</code></pre>
+<p>Note the <code>AT=@replicas</code> section in the <code>RESTRAINT</code> action. In this case, we must generate
+as many directories (here termed <code>run0</code>, <code>run1</code>, and so on), each of which will contain 
+the <code>tpr</code> file. Simulations are then run using</p>
+<pre><code>$ mpiexec -np 32 --oversubscribe gmx_mpi mdrun -multidir run* -plumed ../plumed.dat -s topolA.tpr -replex 200 -nsteps 200000
+</code></pre>
+<p>While much of the analysis will remain unchanged from the case of running each umbrella
+window independently, it is important to carefully check in the 
+<a href="https://github.com/srnas/demux">demuxed trajectories</a> whether
+the different copies of the system diffuse across windows. 
+Some copies may remain isolated from the rest, which may have catastrophic results. </p>
               
             </div>
           </div><footer>
