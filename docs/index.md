@@ -15,4 +15,4 @@ intended to provide working examples of methods we routinely employ.
 * [Metadynamics](metadynamics.md)
 * [Simulations with multiple replicas](replicas.md)
 
-### [Running simulations with PLUMED at DIPC](docs/dipc.md)
+### [Running simulations with PLUMED at DIPC](dipc.md)
