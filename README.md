@@ -8,6 +8,8 @@ borrow extensively from the fantastic
 necessarily less exhaustive and intended to provide working examples
 of methods we routinely employ.
 
+[BioKT PLUMED webpage](https://biokt.github.io/PLUMED-docs/)
+
 ## Simulation methods
 * Umbrella sampling
 * Metadynamics
