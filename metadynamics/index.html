@@ -54,6 +54,10 @@
               </ul>
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Metadynamics</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#alanine-dipeptide-in-vacuum">Alanine dipeptide in vacuum</a>
+    </li>
+    </ul>
                 </li>
               </ul>
               <ul>
@@ -87,7 +91,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <p><script
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+  type="text/javascript">
+</script>
+</p>
+<h2 id="metadynamics-simulations-using-plumed">Metadynamics simulations using PLUMED</h2>
+<p>One of the key functionalities from PLUMED is the possibility
+of running simulations using metadynamics. The contents from
+this section are borrowed from <a href="https://www.plumed.org/doc-v2.7/user-doc/html/masterclass-21-4.html">masterclass 
+21.4</a>, where the methodology is introduced in simple terms.</p>
+<h3 id="alanine-dipeptide-in-vacuum">Alanine dipeptide in vacuum</h3>
+<p>To run this example, you will need the input files in the <code>data</code>
+folder from this repository. Then, write a <code>plumed.dat</code> file
+with the following contents</p>
+<pre><code>MOLINFO STRUCTURE=dialaA.pdb
+phi: TORSION ATOMS=@phi-2
+psi: TORSION ATOMS=@psi-2
+
+metad: METAD ARG=phi ...
+   PACE=500 HEIGHT=1.2 BIASFACTOR=8
+   SIGMA=0.3
+   FILE=HILLS GRID_MIN=-pi GRID_MAX=pi
+</code></pre>
+<p>The key difference with umbrella sampling is that we are biasing 
+with the <code>METAD</code> action.</p>
               
             </div>
           </div><footer>
