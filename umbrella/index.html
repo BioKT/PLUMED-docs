@@ -106,13 +106,13 @@
 should be in the <code>data/umbrella</code> folder of this repository.
 It should contain the following files from the 
 <a href="https://www.plumed.org/doc-v2.7/user-doc/html/masterclass-21-3.html">21.3 PLUMED masterclass</a>.</p>
-<pre><code>$ ls data/umbrella/
-    ala_dipeptide_analysis.ipynb topolA.tpr                   wham.py
-    reference.pdb                topolB.tpr
+<pre><code class="language-bash">foo@bar:~$ ls data/umbrella/
+   ala_dipeptide_analysis.ipynb topolA.tpr                   wham.py
+   reference.pdb                topolB.tpr
 </code></pre>
 <p>Using the typical Gromacs syntax, you could use these <code>tpr</code> files 
 to run MD simulations using </p>
-<pre><code>$ gmx mdrun -s topolA.tpr -nsteps 200000 -x traj_unbiased.xtc
+<pre><code class="language-bash">foo@bar:~$ gmx mdrun -s topolA.tpr -nsteps 200000 -x traj_unbiased.xtc
 </code></pre>
 <p>This will result in an unbiased simulation trajectory of the 
 alanine dipeptide. </p>
@@ -140,7 +140,7 @@ PRINT ARG=phi,psi FILE=colvar.dat STRIDE=100
 <code>HISTOGRAM</code> and <code>DUMPGRID</code>, to name a few). You should 
 familiarize yourself with their 
 <a href="https://www.plumed.org/doc-v2.7/user-doc/html/glossary.html">syntax</a>.</p>
-<p>Introducing an umbrella bias in this script is exceedingly 
+<p>Introducing an umbrella bias in this script is very 
 easy. It just requires adding an extra line to the script.
 For example, to restrain the simulation with a harmonic
 potential at 0 radians with a spring constant of 200,
@@ -153,23 +153,23 @@ window umbrella sampling, and hence the structure of
 our directory should change with as many plumed files
 as umbrellas windows. To generate 32 PLUMED input files, 
 we can use the following Python script:</p>
-<pre><code>at=np.linspace(-np.pi,np.pi,33)[:-1]
+<pre><code class="language-python">at=np.linspace(-np.pi,np.pi,33)[:-1]
 print(at)
 for i in range(32):
-    with open("plumed_" + str(i) + ".dat","w") as f:
-        print("""
+    with open(&quot;plumed_&quot; + str(i) + &quot;.dat&quot;,&quot;w&quot;) as f:
+        print(&quot;&quot;&quot;
 # vim:ft=plumed
 MOLINFO STRUCTURE=reference.pdb
 phi: TORSION ATOMS=@phi-2 
 psi: TORSION ATOMS=@psi-2
 bb: RESTRAINT ARG=phi KAPPA=200.0 AT={}
 PRINT ARG=phi,psi,bb.bias FILE=colvar_multi_{}.dat STRIDE=100
-""".format(at[i],i),file=f)
+&quot;&quot;&quot;.format(at[i],i),file=f)
 </code></pre>
 <p>And then we will run the 32 simulations</p>
-<pre><code>$&gt; for i in $(seq 0 1 31);
+<pre><code class="language-bash">foo@bar:~$ for i in $(seq 0 1 31)
 do 
-gmx mdrun -plumed plumed_${i}.dat -s topolA.tpr -nsteps 200000 -x traj_comp_${i}.xtc
+   gmx mdrun -plumed plumed_${i}.dat -s topolA.tpr -nsteps 200000 -x traj_comp_${i}.xtc
 done
 </code></pre>
 <p>The result from this will be a dataset of 32 simulations, all
@@ -178,32 +178,32 @@ that will bias the sampling to different regions of conformational
 space.</p>
 <p>After completion of the runs, we must analyze the resulting 
 trajectories. In order to do that we concatenate the trajectories</p>
-<pre><code>$ gmx trjcat -cat -f `for i in $(seq 0 1 31); do echo "traj_comp_${i}.xtc"; done` -o traj_multi_cat.xtc
+<pre><code class="language-bash">foo@bar:~$ gmx trjcat -cat -f `for i in $(seq 0 1 31); do echo &quot;traj_comp_${i}.xtc&quot;; done` -o traj_multi_cat.xtc
 </code></pre>
 <p>Then, we analyze them using plumed driver:</p>
-<pre><code>$ for i in $(seq 0 1 31)
+<pre><code class="language-bash">foo@bar:~$ for i in $(seq 0 1 31)
 do 
-plumed driver --plumed plumed_${i}.dat --ixtc traj_multi_cat.xtc --trajectory-stride 100
+    plumed driver --plumed plumed_${i}.dat --ixtc traj_multi_cat.xtc --trajectory-stride 100
 done
 </code></pre>
 <p>To visualize the output of the simulations, we can read the 
 <code>colvar_multi_\*.dat</code> files and see what region of the 
 Ramachandran map has been sampled by each of the runs. Using
 a Jupyter-notebook we can run the following </p>
-<pre><code>import plumed
+<pre><code class="language-python">import plumed
 import wham
 
 col=[]
 for i in range(32):
-    col.append(plumed.read_as_pandas("colvar_multi_" + str(i)+".dat"))
+    col.append(plumed.read_as_pandas(&quot;colvar_multi_&quot; + str(i)+&quot;.dat&quot;))
 
-bias = np.zeros((len(col[0]["bb.bias"]),32))
+bias = np.zeros((len(col[0][&quot;bb.bias&quot;]),32))
 for i in range(32):
-    bias[:,i] = col[i]["bb.bias"][-len(bias):]
+    bias[:,i] = col[i][&quot;bb.bias&quot;][-len(bias):]
 w = wham.wham(bias,T=kBT)
 colvar = col[0]
-colvar["logweights"] = w["logW"]
-plumed.write_pandas(colvar,"bias_multi.dat")
+colvar[&quot;logweights&quot;] = w[&quot;logW&quot;]
+plumed.write_pandas(colvar,&quot;bias_multi.dat&quot;)
 </code></pre>
 <p>We then write a file called <code>plumed_multi.dat</code> to obtain 
 reweighted free energy surfaces. The file should look as
@@ -230,11 +230,15 @@ ffpsir: CONVERT_TO_FES GRID=hhpsir
 DUMPGRID GRID=ffpsir FILE=fes_psi_catr.dat
 </code></pre>
 <p>This script is again read by plumed driver, and from this program we get our outputs.</p>
-<pre><code>plumed driver --plumed plumed_multi.dat --ixtc traj_multi_cat.xtc --trajectory-stride 100 --kt 2.4943387854
+<pre><code class="language-bash">foo@bar:~$ plumed driver --plumed plumed_multi.dat --ixtc traj_multi_cat.xtc --trajectory-stride 100 --kt 2.4943387854
 </code></pre>
-<p>In the folder where you have found the data to run these tests you can find a script that will let you plot the free energy landscapes as estimated from umbrella sampling and compare them with those from the equilibrium MD trajectory.
-Clearly, using umbrella sampling we have been able to cover much more ground for our reaction coordinates, while obtaining a very consistent PMF in the regions that actually matter.
-One of the assignments in the masterclass is to run from a different initial state, that corresponding to the <code>topolB.tpr</code> Gromacs input file.</p>
+<p>In the folder where you have found the data to run these tests you can find a script
+ that will let you plot the free energy landscapes as estimated from umbrella
+ sampling and compare them with those from the equilibrium MD trajectory.
+Clearly, using umbrella sampling we have been able to cover much more ground 
+for our reaction coordinates, while obtaining a very consistent PMF in the
+ regions that actually matter. One of the assignments in the masterclass is to run 
+from a different initial state, that corresponding to the <code>topolB.tpr</code> Gromacs input file.</p>
 <h4 id="running-with-multiple-replicas">Running with multiple replicas</h4>
 <p>Typically, if we want to do molecular simulations using umbrella sampling, we will 
 take advantage of the parallel capabilities of modern computers. Additionally, 
@@ -254,7 +258,7 @@ PRINT ARG=phi,psi,bb.bias FILE=../colvar_multi.dat STRIDE=100
 <p>Note the <code>AT=@replicas</code> section in the <code>RESTRAINT</code> action. In this case, we must generate
 as many directories (here termed <code>run0</code>, <code>run1</code>, and so on), each of which will contain 
 the <code>tpr</code> file. Simulations are then run using</p>
-<pre><code>$ mpiexec -np 32 --oversubscribe gmx_mpi mdrun -multidir run* -plumed ../plumed.dat -s topolA.tpr -replex 200 -nsteps 200000
+<pre><code class="language-bash">foo@bar:~$ mpiexec -np 32 --oversubscribe gmx_mpi mdrun -multidir run* -plumed ../plumed.dat -s topolA.tpr -replex 200 -nsteps 200000 
 </code></pre>
 <p>While much of the analysis will remain unchanged from the case of running each umbrella
 window independently, it is important to carefully check in the 
