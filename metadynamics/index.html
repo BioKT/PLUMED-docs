@@ -135,7 +135,7 @@ command</p>
 collective variable with increasingly large amounts of data. Hopefully, 
 this will show that the free energy estimation is well converged. </p>
 <p>Additionally, we can use the <code>driver</code>, for more analysis. For example,
-we can write the following analysis script to reweight the simulation 
+we can write the following script to reweight the simulation 
 data and obtain the energy surface not only on the biased coordinate
 but also on other coordinates (in this case, the psi torsion angle)</p>
 <pre><code>MOLINFO STRUCTURE=dialaA.pdb
@@ -161,6 +161,20 @@ PRINT ARG=phi,psi,metad.bias FILE=colvar_reweight.dat STRIDE=1
 </code></pre>
 <p>The results are output to the <code>ffphi.dat</code> and <code>ffpsi.dat</code> files, the latter
 containing a notably noisy free energy landscape. </p>
+<p>We may want to overcome this problem adding a bias in two independent coordinates.</p>
+<pre><code>MOLINFO STRUCTURE=dialaA.pdb
+phi: TORSION ATOMS=@phi-2
+psi: TORSION ATOMS=@psi-2
+
+metad: METAD ARG=phi,psi ...
+   PACE=500 HEIGHT=1.2 BIASFACTOR=8
+   SIGMA=0.3,0.3
+   FILE=HILLS2d GRID_MIN=-pi,-pi GRID_MAX=pi,pi
+...
+PRINT ARG=phi,psi FILE=colvarA2d.dat STRIDE=10
+</code></pre>
+<p>Again, the <code>HILLS</code> file can be analyzed using <code>plumed sum_hills</code>to produce a smooth
+two dimensional free energy landscape.</p>
               
             </div>
           </div><footer>
