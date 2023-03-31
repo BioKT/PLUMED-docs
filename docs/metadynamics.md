@@ -93,3 +93,5 @@ PRINT ARG=phi,psi FILE=colvarA2d.dat STRIDE=10
 ```
 Again, the `HILLS` file can be analyzed using `plumed sum_hills`to produce a smooth
 two dimensional free energy landscape.
+![2D free energy lansdcape on Ramachandran space](img/meta2d.png)
+
