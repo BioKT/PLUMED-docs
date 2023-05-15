@@ -147,9 +147,9 @@ metad: METAD ARG=phi ...
    FILE=HILLS GRID_MIN=-pi GRID_MAX=pi
    RESTART=YES
 ...
-as: REWEIGHT_BIAS ARG=metad.bias
-hhphi: HISTOGRAM ARG=phi STRIDE=50 GRID_MIN=-pi GRID_MAX=pi GRID_BIN=50 BANDWIDTH=0.05 LOGWEIGHTS=as
-hhpsi: HISTOGRAM ARG=psi STRIDE=50 GRID_MIN=-pi GRID_MAX=pi GRID_BIN=50 BANDWIDTH=0.05 LOGWEIGHTS=as
+bias: REWEIGHT_BIAS ARG=metad.bias
+hhphi: HISTOGRAM ARG=phi STRIDE=50 GRID_MIN=-pi GRID_MAX=pi GRID_BIN=50 BANDWIDTH=0.05 LOGWEIGHTS=bias
+hhpsi: HISTOGRAM ARG=psi STRIDE=50 GRID_MIN=-pi GRID_MAX=pi GRID_BIN=50 BANDWIDTH=0.05 LOGWEIGHTS=bias
 ffphi: CONVERT_TO_FES GRID=hhphi
 ffpsi: CONVERT_TO_FES GRID=hhpsi
 DUMPGRID GRID=ffphi FILE=ffphi.dat
@@ -174,7 +174,8 @@ metad: METAD ARG=phi,psi ...
 PRINT ARG=phi,psi FILE=colvarA2d.dat STRIDE=10
 </code></pre>
 <p>Again, the <code>HILLS</code> file can be analyzed using <code>plumed sum_hills</code>to produce a smooth
-two dimensional free energy landscape.</p>
+two dimensional free energy landscape.
+<img alt="2D free energy lansdcape on Ramachandran space" src="../img/meta2d.png" /></p>
               
             </div>
           </div><footer>
