@@ -8,3 +8,6 @@ nav:
     - Multiple replicas : replicas.md
     - PLUMED@DIPC: dipc.md
 theme: readthedocs
+markdown_extensions:
+  - attr_list
+  - md_in_html

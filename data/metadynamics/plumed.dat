@@ -1,0 +1,10 @@
+MOLINFO STRUCTURE=dialaA.pdb
+phi: TORSION ATOMS=@phi-2
+psi: TORSION ATOMS=@psi-2
+
+metad: METAD ARG=phi ...
+   PACE=500 HEIGHT=1.2 BIASFACTOR=8
+   SIGMA=0.3
+   FILE=HILLS GRID_MIN=-pi GRID_MAX=pi
+...
+PRINT ARG=phi,psi FILE=colvarA.dat STRIDE=10
