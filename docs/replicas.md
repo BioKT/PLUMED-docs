@@ -23,8 +23,10 @@ In the terminal, type
 
     $ ls data/replex
 
-You should find a number of files, including a file called `alaTB_ff03_tip3p_pp.top`. This
-is a pre-processed topology containing all the information required to run a simulation, and
+You should find a number of files, including the Gromacs structure file `alaTB_ff03_tip3p_npt.gro`
+and another file called `alaTB_ff03_tip3p_pp.top`. The former is a properly equilibrated 
+structure file, of the alanine dipeptide in TIP3P water. The latter is a pre-processed topology
+ containing all the information required to run a simulation, and
 hence devoid of [`include` directives](https://manual.gromacs.org/current/dev-manual/includestyle.html).
 Note that in the `[ atoms ]` section, we have modified the standard names of the atoms with
 an underscore (i.e. `HC` is now `HC_`). This will mark these atoms as the solute whose
@@ -32,9 +34,15 @@ interactions will be scaled in the REST2 scheme.
 
 The first step is hence to scale the interactions, and in order to do this, we
 use PLUMED `partial_tempering' program. Because we are running multiple 
-replicas, each with a different scaling, the command will be run inside a (Python)
- loop:
+replicas, each with a different scaling, the command will be run inside a loop
+in the following Python script:
 
+    import sys, os
+
+    gro = "alaTB_ff03_tip3p_npt.gro"
+    toppp = "alaTB_ff03_tip3p_pp.top"
+    mdp = "sd_nvt.mdp"
+    
     # scale solute interactions
     nrep = 4
     tmax = 1000
@@ -58,7 +66,8 @@ replicas, each with a different scaling, the command will be run inside a (Pytho
         command = gmx + " grompp -f %s -p %s -c %s -o %s"%(mdp, top, gro, tpr)
         os.system(command)
 
-This will generate a number of folders, each with a scaled topology file `scaled.top`. 
+In your machine, `gmx` should point to a working MPI installation of Gromacs.
+This script will generate a number of folders, each with a scaled topology file `scaled.top`. 
 Because we have generated the run input files for Gromacs, we can simply run the
 simulations using
 
