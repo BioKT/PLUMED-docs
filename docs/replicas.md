@@ -75,3 +75,13 @@ simulations using
 
 Note that, as I did, you may need the flag `--mca opal_cuda_support 1` for running the simulations
 with GPU support.
+
+You can next verify whether your replica scheme has been successful demuxing the trajectories
+using the `demux.pl` script included in the Gromacs distribution:
+
+    perl demux.pl rep0/md.log
+
+Again, you will likely need to provide the full path to the Perl script.
+Additionally, you can analyze the results to verify how much additional sampling has been
+done through the replica exchange scheme. We have included a Python notebook with some
+rudimentary analysis.
