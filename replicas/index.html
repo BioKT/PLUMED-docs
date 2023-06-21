@@ -58,6 +58,10 @@
               </ul>
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Multiple replicas</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#rest2">REST2</a>
+    </li>
+    </ul>
                 </li>
               </ul>
               <ul>
@@ -77,17 +81,86 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>Multiple replicas</li>
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Multiple replicas</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
   <hr/>
 </div>
+
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <p><script
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+  type="text/javascript">
+</script>
+</p>
+<h2 id="working-with-multiple-replicas">Working with multiple replicas</h2>
+<p>For a general description of how to integrate PLUMED when working with multiple
+replicas, check the PLUMED <a href="https://github.com/plumed/masterclass-21-5">masterclass 21.5</a>.
+Note that for using this you will need both PLUMED and Gromacs to be installed 
+using MPI. Check installation instructions 
+<a href="https://www.plumed.org/doc-v2.8/user-doc/html/_installation.html">here</a>.</p>
+<h3 id="rest2">REST2</h3>
+<p>Here we illustrate how to use the replica exchage with solute tempering method in its 
+second iteration (i.e. <a href="https://doi.org/10.1021/jp204407d">REST2</a>), which uses a different
+ scaling scheme that the original <a href="https://doi.org/10.1073/pnas.0506346102">REST</a>.
+Before you start, please check the materials at the PLUMED website on <a href="https://www.plumed.org/doc-v2.7/user-doc/html/hrex.html">Hamiltonian
+replica exchange</a>.</p>
+<p>The first thing to check is whether all the files you will need are available in your folder. 
+In the terminal, type</p>
+<pre><code>$ ls data/replex
+</code></pre>
+<p>You should find a number of files, including the Gromacs structure file <code>alaTB_ff03_tip3p_npt.gro</code>
+and another file called <code>alaTB_ff03_tip3p_pp.top</code>. The former is a properly equilibrated 
+structure file, of the alanine dipeptide in TIP3P water. The latter is a pre-processed topology
+ containing all the information required to run a simulation, and
+hence devoid of <a href="https://manual.gromacs.org/current/dev-manual/includestyle.html"><code>include</code> directives</a>.
+Note that in the <code>[ atoms ]</code> section, we have modified the standard names of the atoms with
+an underscore (i.e. <code>HC</code> is now <code>HC_</code>). This will mark these atoms as the solute whose
+interactions will be scaled in the REST2 scheme.</p>
+<p>The first step is hence to scale the interactions, and in order to do this, we
+use PLUMED `partial_tempering' program. Because we are running multiple 
+replicas, each with a different scaling, the command will be run inside a loop
+in the following Python script:</p>
+<pre><code>import sys, os
+
+gro = "alaTB_ff03_tip3p_npt.gro"
+toppp = "alaTB_ff03_tip3p_pp.top"
+mdp = "sd_nvt.mdp"
+
+# scale solute interactions
+nrep = 4
+tmax = 1000
+t0 = 300
+for i in range(nrep):
+    exponent = i/(nrep - 1)
+    ti = t0*(tmax/t0)**exponent 
+    lmbd = t0/ti
+
+    folder = "rep%i"%i
+    try:
+        os.mkdir(folder)
+    except OSError as e:
+        print (e)
+
+    command = "plumed partial_tempering %g &lt; %s &gt; %s/scaled.top"%(lmbd, toppp, folder)
+    os.system(command)
+
+    top = "%s/scaled.top"%folder 
+    tpr = "%s/alaTB_ff03_tip3p_nvt.tpr"%folder
+    command = gmx + " grompp -f %s -p %s -c %s -o %s"%(mdp, top, gro, tpr)
+    os.system(command)
+</code></pre>
+<p>In your machine, <code>gmx</code> should point to a working MPI installation of Gromacs.
+This script will generate a number of folders, each with a scaled topology file <code>scaled.top</code>. 
+Because we have generated the run input files for Gromacs, we can simply run the
+simulations using</p>
+<pre><code>mpiexec -np 4  gmx_mpi mdrun -s alaTB_ff03_tip3p_nvt -multidir rep*  -nsteps 1000000 -plumed ../plumed.dat -hrex -replex 500 -v
+</code></pre>
+<p>Note that, as I did, you may need the flag <code>--mca opal_cuda_support 1</code> for running the simulations
+with GPU support.</p>
               
             </div>
           </div><footer>
