@@ -141,21 +141,23 @@ srun gmx_mpi mdrun -ntomp $SLURM_CPUS_PER_TASK -nb auto -bonded auto -pme auto -
 the corresponding flags. The example below is for replica exchange for
 solute tempering (<code>-hrex</code>), which will require the existence of
 a <code>plumed.dat</code> file, which can be empty.</p>
-<p>```</p>
-<h1 id="binbash">!/bin/bash</h1>
-<h1 id="sbatch-partitionregular">SBATCH --partition=regular</h1>
-<h1 id="sbatch-job-namegromacs_plumed">SBATCH --job-name=GROMACS_plumed</h1>
-<h1 id="sbatch-mem64gb">SBATCH --mem=64gb</h1>
-<h1 id="sbatch-nodes1">SBATCH --nodes=1</h1>
-<h1 id="sbatch-cpus-per-task1">SBATCH --cpus-per-task=1</h1>
-<h1 id="sbatch-ntasks-per-node8">SBATCH --ntasks-per-node=8</h1>
-<h1 id="sbatch-gresgpup401">SBATCH --gres=gpu:p40:1</h1>
-<h1 id="sbatch-time001000">SBATCH --time=00:10:00</h1>
-<p>module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2</p>
-<p>tpr="input_rest2"
-out=$tpr</p>
-<p>mpirun -np ${SLURM_NTASKS} gmx_mpi mdrun -s $tpr -ntomp 1 -v -multidir rep* -nsteps 1000 -hrex -replex 100 -deffnm $out -plumed ../plumed.dat
-``</p>
+<pre><code>#!/bin/bash
+#SBATCH --partition=regular
+#SBATCH --job-name=GROMACS_plumed
+#SBATCH --mem=64gb
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=8
+#SBATCH --gres=gpu:p40:1
+#SBATCH --time=00:10:00
+
+module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2
+
+tpr=&quot;input_rest2&quot;
+out=$tpr
+
+mpirun -np ${SLURM_NTASKS} gmx_mpi mdrun -s $tpr -ntomp 1 -v -multidir rep* -nsteps 1000 -hrex -replex 100 -deffnm $out -plumed ../plumed.dat
+</code></pre>
               
             </div>
           </div><footer>
