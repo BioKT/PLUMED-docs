@@ -63,9 +63,9 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">PLUMED@DIPC</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#dipc-systems">DIPC SYSTEMS</a>
+    <li class="toctree-l2"><a class="reference internal" href="#serial-jobs">Serial jobs</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#starting">STARTING</a>
+    <li class="toctree-l2"><a class="reference internal" href="#multiple-replicas">Multiple replicas</a>
     </li>
     </ul>
                 </li>
@@ -83,30 +83,28 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>PLUMED@DIPC</li>
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>PLUMED@DIPC</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
   <hr/>
 </div>
-
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="use-gromacs-plumed-in-dipc">USE GROMACS + PLUMED IN @DIPC</h1>
-<h2 id="dipc-systems">DIPC SYSTEMS</h2>
-<p>For any information related with how DIPC computing system works (ATLAS), please see the corresponding web pages:
-* <a href="https://cc.dipc.org/computing_resources/">ATLAS</a>
-* <a href="https://cc.dipc.org/computing_resources/systems/atlas-edr/">ATLAS EDR System</a>
-* <a href="https://cc.dipc.org/computing_resources/systems/atlas-fdr/">ATLAS FDR System</a></p>
-<p>The main difference between the 2 systems is that EDR has GPUs while FDR do not. For this reason, we will use for our purpose the <strong>EDR system</strong>.</p>
-<hr />
-<h2 id="starting">STARTING</h2>
-<p>The first thing you need to do in Atlas for using any software is to load it. Use the command below to load the GROMACS software with the PLUMED plugin installed.</p>
-<p>To date: 13 / 03 / 2023</p>
+                <h1 id="running-simulations-using-gromacs-and-plumed-at-dipc-systems">Running simulations using GROMACS and PLUMED at DIPC systems</h1>
+<p>For any information related with how DIPC computing system works (ATLAS), 
+please see the corresponding <a href="https://cc.dipc.org/computing_resources/">web pages</a>.
+Here, we will restrict ourselves to the 
+<a href="https://cc.dipc.org/computing_resources/systems/atlas-edr/">EDR</a> part of Atlas, 
+which is powered by GPUs.</p>
+<h2 id="serial-jobs">Serial jobs</h2>
+<p>The first thing you need to do in Atlas for using any software is to load the
+corresponding module</p>
 <pre><code>module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2
 </code></pre>
-<p>The very basic Batch script for parallel execution of GROMACS is the following:</p>
+<p>Below, you can find a batch script for parallel execution</p>
 <pre><code>#!/bin/bash
 #SBATCH --partition=regular
 #SBATCH --job-name=GROMACS_job
@@ -121,7 +119,8 @@ module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2
 
 srun  gmx_mpi mdrun -ntomp ${SLURM_CPUS_PER_TASK} -s input.tpr
 </code></pre>
-<p>For the use of GPUs you can use:</p>
+<p>You can specify the number of GPUs that you are requesting making a
+small modification of the script </p>
 <pre><code>#!/bin/bash
 #SBATCH --partition=regular
 #SBATCH --job-name=GROMACS_job
@@ -137,6 +136,26 @@ module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2
 
 srun gmx_mpi mdrun -ntomp $SLURM_CPUS_PER_TASK -nb auto -bonded auto -pme auto -gpu_id 01 -s input.tpr
 </code></pre>
+<h2 id="multiple-replicas">Multiple replicas</h2>
+<p>In order to run GROMACS with multiple replicas, remember to add 
+the corresponding flags. The example below is for replica exchange for
+solute tempering (<code>-hrex</code>), which will require the existence of
+a <code>plumed.dat</code> file, which can be empty.</p>
+<p>```</p>
+<h1 id="binbash">!/bin/bash</h1>
+<h1 id="sbatch-partitionregular">SBATCH --partition=regular</h1>
+<h1 id="sbatch-job-namegromacs_plumed">SBATCH --job-name=GROMACS_plumed</h1>
+<h1 id="sbatch-mem64gb">SBATCH --mem=64gb</h1>
+<h1 id="sbatch-nodes1">SBATCH --nodes=1</h1>
+<h1 id="sbatch-cpus-per-task1">SBATCH --cpus-per-task=1</h1>
+<h1 id="sbatch-ntasks-per-node8">SBATCH --ntasks-per-node=8</h1>
+<h1 id="sbatch-gresgpup401">SBATCH --gres=gpu:p40:1</h1>
+<h1 id="sbatch-time001000">SBATCH --time=00:10:00</h1>
+<p>module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2</p>
+<p>tpr="input_rest2"
+out=$tpr</p>
+<p>mpirun -np ${SLURM_NTASKS} gmx_mpi mdrun -s $tpr -ntomp 1 -v -multidir rep* -nsteps 1000 -hrex -replex 100 -deffnm $out -plumed ../plumed.dat
+``</p>
               
             </div>
           </div><footer>
