@@ -1,5 +1,0 @@
-Files present:
-- PDB
-- NDX
-- TOP (scaled AL and CL ions only)
-- MDP
