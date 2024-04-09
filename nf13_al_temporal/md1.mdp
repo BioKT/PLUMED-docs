@@ -1,0 +1,60 @@
+; NPT PRODUCTION RUN PARAMETERS FILE
+;
+; RUN CONTROL PARAMETERS
+;
+integrator           =  md         ; leap-frog integrator.
+init_step            =  0          ; [steps] step to initialize, continuation of previous NPT equilibration. 
+dt                   =  0.002      ; [ps] step-size.
+nsteps               = 5000000   ; [steps] number of steps
+;
+; BONDS PARAMETERS
+;
+continuation        =  no       ; restarting after NPT equilibration.
+constraints         =  h-bonds   ; apply contraints to H-atoms.
+constraint_algorithm =  LINCS    ; LINear Constraints solver algorithm.
+lincs_order         =   4        ; accuracy for the algorithm.  
+lincs_iter          =   1        ; number of iterative corrections.
+;
+; OUTPUT CONTROL
+nstxout                      =  50000 ; save coordinates every 100.0 ps.
+nstvout                      =  50000 ; save velocities every 100.0 ps
+nstfout                      =  50000 ; save forces every 100.0 ps
+nstlog                       =  50000 ; update log file every 100.0 ps.
+nstenergy                    =  50000 ; save energies every 100.0 ps
+nstxout-compressed           =  5000  ; save coordinates to XTC file every 10.0 ps.
+compressed-x-precision       =  5000  ; precision for the XTC file.
+;
+; NEIGHBORSEARCHING PARAMETERS
+cutoff-scheme       = Verlet   ; buffered neighbor searching
+nstlist             =  10      ; [steps] freq. to update neighbor list.
+ns_type             =  grid    ; search neighboring grid cells.
+pbc                 =  xyz     ; periodic boundary conditions in all directions.
+periodic_molecules  =  no      ; molecules do not couple to themselves through PBC conditions.
+rlist               =  1.0     ; [nm] cut-off distance.
+;
+; ELECTROSTATICS AND VDW PARAMETERS
+coulombtype         =  PME         ; fast smooth particle mesh ewald for long-range.
+rcoulomb            =  1.0         ; [nm] cut-off distance electrostatics.
+vdwtype             =  Cut-off     ; plain cutoff with pair list radius (rlist) and vdw cutoff (rvdw).
+rvdw                =  1.0         ; [nm] cut-off distance van der waals.
+DispCorr            = EnerPres     ; apply long range dispersion corrections for Energy and Pressure.
+fourierspacing      =  0.12        ; [nm] grid spacing for FFT. 
+pme_order           =  4           ; 4 equals cubic interpolation. 
+optimize_fft        =  yes         ; calculated optimal fft plan for grid startup. good for long simulations. 
+;
+; TEMPERATURE COUPLING PARAMETERS
+Tcoupl              = v-rescale                 ; Similar to Berendsen but ensures canonical ensemble.
+tc-grps             = Protein_AL Water_and_ions ; groups to couple. See file indices.ndx from make_ndx.
+tau_t               = 0.1       0.1             ; [ps] time constant for coupling for each group.
+ref_t               = 300       300             ; [k] reference temperature for coupling for each group
+;
+; PRESSURE COUPLING PARAMETERS
+Pcoupl              = Parrinello-Rahman  ; Extended-ensemble pressure coupling where the box vectors are subject to an equation of motion.
+Pcoupltype          = isotropic          ; uniform scaling of box vectors
+tau_p               = 0.5                ; [ps] time constant for coupling.
+compressibility     = 4.5e-5             ; [bat^-1] isothermal compressibility of water
+ref_p               = 1                  ; [bar] reference pressure
+;
+; GENERATE VELOCITIES FOR STARTUP RUN
+gen_vel        = no       ; assign velocities from Maxwell distribution
+ld-seed        = -1       ; generate a presudo-random seed.
