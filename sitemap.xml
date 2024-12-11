@@ -9,14 +9,6 @@
          <lastmod>2024-12-11</lastmod>
     </url>
     <url>
-         <loc>https://github.com/BioKT/PLUMED-docs/metadynamics-with-Q/</loc>
-         <lastmod>2024-12-11</lastmod>
-    </url>
-    <url>
-         <loc>https://github.com/BioKT/PLUMED-docs/metadynamics/</loc>
-         <lastmod>2024-12-11</lastmod>
-    </url>
-    <url>
          <loc>https://github.com/BioKT/PLUMED-docs/replicas/</loc>
          <lastmod>2024-12-11</lastmod>
     </url>
@@ -26,6 +18,14 @@
     </url>
     <url>
          <loc>https://github.com/BioKT/PLUMED-docs/umbrella/</loc>
+         <lastmod>2024-12-11</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/BioKT/PLUMED-docs/metadynamics/metadynamics-with-Q/</loc>
+         <lastmod>2024-12-11</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/BioKT/PLUMED-docs/metadynamics/metadynamics/</loc>
          <lastmod>2024-12-11</lastmod>
     </url>
 </urlset>
