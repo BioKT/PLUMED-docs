@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/BioKT/PLUMED-docs/dipc/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/BioKT/PLUMED-docs/metadynamics-with-Q/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>PLUMED@DIPC - BioKT-PLUMED-docs</title>
+    <title>Defining Q as collective variable - BioKT-PLUMED-docs</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "PLUMED@DIPC";
-        var mkdocs_page_input_path = "dipc.md";
-        var mkdocs_page_url = "/BioKT/PLUMED-docs/dipc/";
+        var mkdocs_page_name = "Defining Q as collective variable";
+        var mkdocs_page_input_path = "metadynamics-with-Q.md";
+        var mkdocs_page_url = "/BioKT/PLUMED-docs/metadynamics-with-Q/";
       </script>
     
     <!--[if lt IE 9]>
@@ -52,24 +52,20 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Metadynamics</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../metadynamics/">Alanine dipeptide in vacuum</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../metadynamics-with-Q/">Defining Q as collective variable</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Defining Q as collective variable</a>
+    <ul class="current">
+    </ul>
                   </li>
               </ul>
               <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../replicas/">Multiple replicas</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">PLUMED@DIPC</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#dipc-systems">DIPC SYSTEMS</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#starting">STARTING</a>
-    </li>
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dipc/">PLUMED@DIPC</a>
                 </li>
               </ul>
       </div>
@@ -86,7 +82,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">PLUMED@DIPC</li>
+          <li class="breadcrumb-item">Metadynamics</li>
+      <li class="breadcrumb-item active">Defining Q as collective variable</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -95,55 +92,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="use-gromacs-plumed-in-dipc">USE GROMACS + PLUMED IN @DIPC</h1>
-<h2 id="dipc-systems">DIPC SYSTEMS</h2>
-<p>For any information related with how DIPC computing system works (ATLAS), please see the corresponding web pages:
-* <a href="https://cc.dipc.org/computing_resources/">ATLAS</a>
-* <a href="https://cc.dipc.org/computing_resources/systems/atlas-edr/">ATLAS EDR System</a>
-* <a href="https://cc.dipc.org/computing_resources/systems/atlas-fdr/">ATLAS FDR System</a></p>
-<p>The main difference between the 2 systems is that EDR has GPUs while FDR do not. For this reason, we will use for our purpose the <strong>EDR system</strong>.</p>
-<hr />
-<h2 id="starting">STARTING</h2>
-<p>The first thing you need to do in Atlas for using any software is to load it. Use the command below to load the GROMACS software with the PLUMED plugin installed.</p>
-<p>To date: 13 / 03 / 2023</p>
-<pre><code>module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2
-</code></pre>
-<p>The very basic Batch script for parallel execution of GROMACS is the following:</p>
-<pre><code>#!/bin/bash
-#SBATCH --partition=regular
-#SBATCH --job-name=GROMACS_job
-#SBATCH --mem=200gb
-#SBATCH --cpus-per-task=6
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=8
-#SBATCH --output=%x-%j.out
-#SBATCH --error=%x-%j.err
-
-module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2
-
-srun  gmx_mpi mdrun -ntomp ${SLURM_CPUS_PER_TASK} -s input.tpr
-</code></pre>
-<p>For the use of GPUs you can use:</p>
-<pre><code>#!/bin/bash
-#SBATCH --partition=regular
-#SBATCH --job-name=GROMACS_job
-#SBATCH --mem=200gb
-#SBATCH --cpus-per-task=1
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=48
-#SBATCH --gres=gpu:p40:2
-#SBATCH --output=%x-%j.out
-#SBATCH --error=%x-%j.err
-
-module load GROMACS/2021.3-fosscuda-2020b-PLUMED-2.7.2
-
-srun gmx_mpi mdrun -ntomp $SLURM_CPUS_PER_TASK -nb auto -bonded auto -pme auto -gpu_id 01 -s input.tpr
-</code></pre>
+                <p><script
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+  type="text/javascript">
+</script>
+</p>
+<h2 id="defining-native-contacts-q-as-collective-variable">Defining native contacts (Q) as collective variable</h2>
+<p>In order to understand how to implement Q as a collective variable in PLUMED
+one needs to understand how Q is defined:</p>
+<p>$$ 
+Q(X) = \frac{1}{N} 
+\sum_{\left(i,i\ritgh)\frac{1}{1+exp\left[\beta \left(r_{ij}(X)-\lambda r^{0}_{ij}\right)]}}
+$$</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../replicas/" class="btn btn-neutral float-left" title="Multiple replicas"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../metadynamics/" class="btn btn-neutral float-left" title="Alanine dipeptide in vacuum"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../replicas/" class="btn btn-neutral float-right" title="Multiple replicas">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -166,8 +132,10 @@ srun gmx_mpi mdrun -ntomp $SLURM_CPUS_PER_TASK -nb auto -bonded auto -pme auto -
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../replicas/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../metadynamics/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../replicas/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
