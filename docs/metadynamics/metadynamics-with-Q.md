@@ -12,7 +12,7 @@ one needs to understand how Q is defined:
 
 $$Q(X) = \frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1+exp\left[\beta \left(r_{ij}(X)-\lambda r^{0}_{ij}\right)\right]}$$
 
-where the sum runs over the _N_ pairs of native contacts _(i,j)_, _r_$`_{ij}`$_(X)_ is the 
+where the sum runs over the _N_ pairs of native contacts _(i,j)_, _r_ $_{ij}$ _(X)_ is the 
 distance between _i_ and _j_ in configuration _X_, r\^{0}_{ij}\ is the distance between
 _i_ and _j_ in the native state, $\beta$ is a smoothing parameter taken to be 5 $\{AA}^{-1}$ 
 and the factor $\lambda$ accounts for fluctuations when the contact is formed, taken to be
