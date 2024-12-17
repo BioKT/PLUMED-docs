@@ -2,14 +2,14 @@
 In order to understand how to implement Q as a collective variable in PLUMED
 one needs to understand how Q is defined:
 
-[comment]: # $$Q(X) = \frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1+exp\left[\beta \left(r_{ij}(X)-\lambda r^{0}_{ij}\right)\right]}$$
 <img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}">
 
 where the sum runs over the _N_ pairs of native contacts _(i,j)_, _r_ $`_{ij}`$ _(X)_ is the 
-distance between _i_ and _j_ in configuration _X_, _r_ $`^{0}_{ij}`$ is the distance between
-_i_ and _j_ in the native state, $\beta$ is a smoothing parameter taken to be 5 Å$`^{-1}`$ 
-and the factor $`\lambda`$ accounts for fluctuations when the contact is formed, taken to be
-1.2.
+distance between _i_ and _j_ in configuration _X_, <img src="https://latex.codecogs.com/svg.image?r_{ij}^{0}"> 
+is the distance between _i_ and _j_ in the native state, <img src="https://latex.codecogs.com/svg.image?\beta"> 
+is a smoothing parameter taken to be 5 <img src="https://latex.codecogs.com/svg.image?\AA ^{-1}"> 
+and the factor <img src="https://latex.codecogs.com/svg.image?\lambda"> accounts for fluctuations when the 
+contact is formed, taken to be 1.2.
 
 Therefore, the first step is to compute the number of native contacts of our system. To do so,
 I load the native structure. In the case of this example, this native structure has been loaded
