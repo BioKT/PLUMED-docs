@@ -2,7 +2,9 @@
 In order to understand how to implement Q as a collective variable in PLUMED
 one needs to understand how Q is defined:
 
-<img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}">
+<p align="center">
+    <img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}"> 
+p>
 
 where the sum runs over the _N_ pairs of native contacts _(i,j)_, _r_ $`_{ij}`$ _(X)_ is the 
 distance between _i_ and _j_ in configuration _X_, <img src="https://latex.codecogs.com/svg.image?r_{ij}^{0}"> 
