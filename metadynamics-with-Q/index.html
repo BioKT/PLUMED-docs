@@ -95,7 +95,12 @@
                 <h2 id="defining-native-contacts-q-as-collective-variable">Defining native contacts (Q) as collective variable</h2>
 <p>In order to understand how to implement Q as a collective variable in PLUMED
 one needs to understand how Q is defined:</p>
-<p><img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}"></p>
+<div>
+  <div style="text-align: center">
+  <img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}">
+  </div>
+</div>
+
 <p>where the sum runs over the <em>N</em> pairs of native contacts <em>(i,j)</em>, <img src="https://latex.codecogs.com/svg.image?r_{ij}(X)"> 
 is thedistance between <em>i</em> and <em>j</em> in configuration <em>X</em>, <img src="https://latex.codecogs.com/svg.image?r_{ij}^{0}"> 
 is the distance between <em>i</em> and <em>j</em> in the native state, <img src="https://latex.codecogs.com/svg.image?\beta"> 
