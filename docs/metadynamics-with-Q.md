@@ -184,3 +184,5 @@ plumed sum_hills --hills HILLS
 
 Once this line is run, a file named `fes.dat` will be created, which containts the information of the Free Energy Surface
 of your metadynamics calculation.
+
+Lets see
