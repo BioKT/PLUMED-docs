@@ -2,7 +2,8 @@
 In order to understand how to implement Q as a collective variable in PLUMED
 one needs to understand how Q is defined:
 
-<center><img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}"><center>
+<img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}">
+
 
 where the sum runs over the _N_ pairs of native contacts _(i,j)_, <img src="https://latex.codecogs.com/svg.image?r_{ij}(X)"> 
 is thedistance between _i_ and _j_ in configuration _X_, <img src="https://latex.codecogs.com/svg.image?r_{ij}^{0}"> 
@@ -20,7 +21,8 @@ pdb = md.load("Heliat-1/Heliat-1.pdb")
 ```
 
 For this particular example, I will consider my native contacts to be exclusively given by
-C$`\alpha`$ atoms. Therefore, I make a dictionary to save the atom index of each C$`\alpha`$
+<img src="https://latex.codecogs.com/svg.image?C\alpha"> atoms. Therefore, I make a dictionary 
+to save the atom index of each <img src="https://latex.codecogs.com/svg.image?C\alpha">
 atom alongside their residue index number (this will be usefull in a future step):
 
 ```
@@ -34,9 +36,9 @@ for i in range(1,17):
 ```
 
 Notice that I am working with an Heliat, which is cyclated using the sidechain of a CYS and an
-ACE. The C atom of this ACE is involved in the formation of $`\alpha`$-helix and therefore I
-define it as an C$`\alpha`$ atom. Once the atom selection is done, I compute the number of native
-contacts:
+ACE. The C atom of this ACE is involved in the formation of <img src="https://latex.codecogs.com/svg.image?\alpha">-helix 
+and therefore I define it as an <img src="https://latex.codecogs.com/svg.image?C\alpha"> atom. 
+Once the atom selection is done, I compute the number of native contacts:
 
 ```
 NATIVE_CUTOFF = 1.0  # nanometers
@@ -53,8 +55,8 @@ Ca_pairs_distances = md.compute_distances(pdb[0], Ca_pairs)[0]
 native_contacts = Ca_pairs[Ca_pairs_distances <= NATIVE_CUTOFF]
 ```
 
-In this case, I am considering as a native contact any interaction between to C$`\alpha`$ atoms that are
-at least at 2 residues apart and that their distance is lower than 1 nm. These native contacts are
+In this case, I am considering as a native contact any interaction between to <img src="https://latex.codecogs.com/svg.image?C\alpha"> 
+atoms that are at least at 2 residues apart and that their distance is lower than 1 nm. These native contacts are
 then stored in the _native\_contacts_ array, which should look like this:
 
 ```
@@ -65,8 +67,8 @@ array([[  3,  38],
 ...
 ```
 
-where each number belongs to the atom index of each C$`\alpha`$. Since I want to translate this to a synthax 
-PLUMED can understand, I translate this contacts from atom indexes to residue indexes as follows:
+where each number belongs to the atom index of each <img src="https://latex.codecogs.com/svg.image?C\alpha">. 
+Since I want to translate this to a synthax PLUMED can understand, I translate this contacts from atom indexes to residue indexes as follows:
 
 ```
 pairs = []
@@ -76,8 +78,8 @@ for i in range(len(native_contacts)):
 ```
 
 Once this step is performed, I am now ready to start writing the first actual PLUMED input files. To do so,
-the first thing I do is to create a file where I select each C$`\alpha`$ internally with PLUMED. I will call
-this file `CA-list.dat` and it will contain the following:
+the first thing I do is to create a file where I select each <img src="https://latex.codecogs.com/svg.image?C\alpha"> 
+internally with PLUMED. I will call this file `CA-list.dat` and it will contain the following:
 
 ```
 file = open("Heliat-1/CA-list.dat", "w")
@@ -101,8 +103,10 @@ is done, I will write the actual PLUMED input file that contains the information
 simulation. In order to fill this file, one should understand how Q should be defined as a collective variable (CV)
 in PLUMED. The first step is to define a contact map where the contacts are your native contacts. Inside the 
 definition of this contact map, one should define five important parameters: cutoff distance of a native contact, 
-$`\beta`$, $`\lambda`$, _r_ $`^{0}_{ij}`$ and weight (which should be 1 divided by the number of native contacts).
-The synthax is the following:
+<img src="https://latex.codecogs.com/svg.image?\beta">, 
+<img src="https://latex.codecogs.com/svg.image?\lambda">, 
+<img src="https://latex.codecogs.com/svg.image?r^{0}_{ij}"> and weight (which should be 1 divided by the number 
+of native contacts). The synthax is the following:
 
 ```
 __ARG1__: CONTACTMAP ...
@@ -112,8 +116,9 @@ __ARG1__: CONTACTMAP ...
 ...
 ```
 where `__ARG1__` should be substituted by the name with which one wants to define the contact map (for now on,
-I will be using `cmap`), `__ARG2__` should be substituted by the reference distance (_r_ $`^{0}_{ij}`$) and
-`__ARG3__` should be substituted by the weight of each distance (1 divided by the number of native contacts).
+I will be using `cmap`), `__ARG2__` should be substituted by the reference distance
+(<img src="https://latex.codecogs.com/svg.image?r^{0}_{ij}">) 
+and `__ARG3__` should be substituted by the weight of each distance (1 divided by the number of native contacts).
 In order to let PLUMED know that it should perform a calculation of Q, we add the Q inside the `SWITCH` function
 and add the `SUM` line at the end of the definition.
 
@@ -168,8 +173,8 @@ file.close()
 ```
 
 Once the `plumed.dat` file is created, the metadynamics simulation is ready to be performed. One should run it in an
-environment where MDTraj is present (as it is imprescindible to define the C$`\alpha`$ atoms we defined in the `CA-list.dat` file.
-The line to run this calculation is the following:
+environment where MDTraj is present (as it is imprescindible to define the <img src="https://latex.codecogs.com/svg.image?C\alpha"> 
+atoms we defined in the `CA-list.dat` file. The line to run this calculation is the following:
 
 ```
 gmx_mpi mdrun -s *tpr -plumed plumed.dat -ntomp 1
@@ -185,5 +190,3 @@ plumed sum_hills --hills HILLS
 
 Once this line is run, a file named `fes.dat` will be created, which containts the information of the Free Energy Surface
 of your metadynamics calculation.
-
-Lets see
