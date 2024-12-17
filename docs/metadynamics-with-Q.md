@@ -9,6 +9,7 @@ one needs to understand how Q is defined:
 </div>
 
 
+
 where the sum runs over the _N_ pairs of native contacts _(i,j)_, <img src="https://latex.codecogs.com/svg.image?r_{ij}(X)"> 
 is thedistance between _i_ and _j_ in configuration _X_, <img src="https://latex.codecogs.com/svg.image?r_{ij}^{0}"> 
 is the distance between _i_ and _j_ in the native state, <img src="https://latex.codecogs.com/svg.image?\beta"> 
