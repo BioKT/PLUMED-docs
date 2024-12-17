@@ -95,13 +95,13 @@
                 <h2 id="defining-native-contacts-q-as-collective-variable">Defining native contacts (Q) as collective variable</h2>
 <p>In order to understand how to implement Q as a collective variable in PLUMED
 one needs to understand how Q is defined:</p>
-<p>[comment]: # $$Q(X) = \frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1+exp\left[\beta \left(r_{ij}(X)-\lambda r^{0}_{ij}\right)\right]}$$
-<img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}"></p>
+<p><img src="https://latex.codecogs.com/svg.image?Q(X)=\frac{1}{N}\sum_{\left(i,i\right)}\frac{1}{1&plus;exp\left[\beta\left(r_{ij}(X)-\lambda&space;r^{0}_{ij}\right)\right]}"></p>
 <p>where the sum runs over the <em>N</em> pairs of native contacts <em>(i,j)</em>, <em>r</em> $<code>_{ij}</code>$ <em>(X)</em> is the 
-distance between <em>i</em> and <em>j</em> in configuration <em>X</em>, <em>r</em> $<code>^{0}_{ij}</code>$ is the distance between
-<em>i</em> and <em>j</em> in the native state, $\beta$ is a smoothing parameter taken to be 5 Å$<code>^{-1}</code>$ 
-and the factor $<code>\lambda</code>$ accounts for fluctuations when the contact is formed, taken to be
-1.2.</p>
+distance between <em>i</em> and <em>j</em> in configuration <em>X</em>, <img src="https://latex.codecogs.com/svg.image?r_{ij}^{0}"> 
+is the distance between <em>i</em> and <em>j</em> in the native state, <img src="https://latex.codecogs.com/svg.image?\beta"> 
+is a smoothing parameter taken to be 5 <img src="https://latex.codecogs.com/svg.image?\AA ^{-1}"> 
+and the factor <img src="https://latex.codecogs.com/svg.image?\lambda"> accounts for fluctuations when the 
+contact is formed, taken to be 1.2.</p>
 <p>Therefore, the first step is to compute the number of native contacts of our system. To do so,
 I load the native structure. In the case of this example, this native structure has been loaded
 as a PDB file, although one could select the file type of their preference.</p>
