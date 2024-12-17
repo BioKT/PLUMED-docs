@@ -4,7 +4,9 @@ nav:
     - Home: index.md
     - Setup: setup.md
     - Umbrella sampling: umbrella.md
-    - Metadynamics: metadynamics.md
+    - Metadynamics: 
+      - Alanine dipeptide in vacuum: metadynamics/metadynamics.md
+      - Defining Q as collective variable: metadynamis/metadynamics-with-Q.md
     - Multiple replicas : replicas.md
     - PLUMED@DIPC: dipc.md
 theme: readthedocs
