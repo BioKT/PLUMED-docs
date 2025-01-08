@@ -120,43 +120,34 @@ atom alongside their residue index number (this will be usefull in a future step
 
 for i in range(1,17):
     if (i == 1):
-        ca[top.select(&quot;residue %i and name C&quot;%i)[0]] = i
+        ca[i] = top.select(&quot;residue %i and name C&quot;%i)[0]
     else:
-        ca[top.select(&quot;residue %i and name CA&quot;%i)[0]] = i
+        ca[i] = top.select(&quot;residue %i and name CA&quot;%i)[0]
 </code></pre>
 <p>Notice that I am working with an Heliat, which is cyclated using the sidechain of a CYS and an
 ACE. The C atom of this ACE is involved in the formation of <img src="https://latex.codecogs.com/svg.image?\alpha">-helix 
 and therefore I define it as an <img src="https://latex.codecogs.com/svg.image?C\alpha"> atom. 
 Once the atom selection is done, I compute the number of native contacts:</p>
-<pre><code>NATIVE_CUTOFF = 1.0  # nanometers
+<pre><code>pairs = []
+contacts = md.compute_contacts(pdb, contacts='all', scheme='closest-heavy')
 
-alpha_carbons = [x for x in ca.keys()]
+NATIVE_CUTOFF = 0.45  # nanometers
 
-Ca_pairs = np.array(
-    [(i,j) for (i,j) in combinations(alpha_carbons, 2)
-        if abs(pdb.topology.atom(i).residue.index - \
-                pdb.topology.atom(j).residue.index) &gt; 2])
-
-Ca_pairs_distances = md.compute_distances(pdb[0], Ca_pairs)[0]
-
-native_contacts = Ca_pairs[Ca_pairs_distances &lt;= NATIVE_CUTOFF]
+for i in range(len(contacts[0][0])):
+    if (contacts[0][0][i] &lt;= NATIVE_CUTOFF):
+        pairs.append(list(contacts[1][i]))
 </code></pre>
-<p>In this case, I am considering as a native contact any interaction between to <img src="https://latex.codecogs.com/svg.image?C\alpha"> 
-atoms that are at least at 2 residues apart and that their distance is lower than 1 nm. These native contacts are
-then stored in the <em>native_contacts</em> array, which should look like this:</p>
-<pre><code>array([[  3,  38],
-       [  3,  59],
-       [  3,  69],
-       [  7,  59],
+<p>In this case, I am considering as a native contact any interaction between two residue pairs
+that are at least 3 residues apart and that their minimum distance is lower than 0.45 nm. 
+These native contacts are then stored in the <em>native_contacts</em> array, which should look like 
+this:</p>
+<pre><code>array([[  1,  4],
+       [  1,  5],
+       [  2,  5],
+       [  2,  6],
 ...
 </code></pre>
-<p>where each number belongs to the atom index of each <img src="https://latex.codecogs.com/svg.image?C\alpha">. 
-Since I want to translate this to a synthax PLUMED can understand, I translate this contacts from atom indexes to residue indexes as follows:</p>
-<pre><code>pairs = []
-
-for i in range(len(native_contacts)):
-    pairs.append([ca[native_contacts[i,0]], ca[native_contacts[i,1]]])
-</code></pre>
+<p>where each number belongs to the residue index of each residue. </p>
 <p>Once this step is performed, I am now ready to start writing the first actual PLUMED input files. To do so,
 the first thing I do is to create a file where I select each <img src="https://latex.codecogs.com/svg.image?C\alpha"> 
 internally with PLUMED. I will call this file <code>CA-list.dat</code> and it will contain the following:</p>
@@ -216,7 +207,12 @@ the following lines:</p>
 
 w = 1 / len(pairs)
 
-ref = md.compute_distances(pdb, native_contacts)[0]
+ref = []
+
+for i in range(len(pairs)):
+    c1 = ca[pairs[i][0]]
+    c2 = ca[pairs[i][1]]
+    ref.append(md.compute_distances(pdb, [[c1, c2]])[0])
 
 file.write(&quot;INCLUDE FILE=CA-list.dat \n \n&quot;)
 file.write(&quot;cmap: CONTACTMAP ... \n&quot;)
